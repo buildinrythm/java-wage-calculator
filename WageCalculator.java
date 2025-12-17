@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class WageCalculator {
 
@@ -53,9 +56,19 @@ public class WageCalculator {
                 employeeBonuses,
                 employeeNetPay
         );
+
+        writeEmployeeSummariesToFile(
+                "payroll.txt",
+                employeeIDs,
+                employeeNames,
+                employeeGrossPay,
+                employeeTaxPaid,
+                employeeBonuses,
+                employeeNetPay
+        );
     }
 
-    // Input Method
+    // ---------- INPUT METHODS ----------
 
     static String getEmployeeID(Scanner scanner) {
         System.out.print("Enter Employee ID: ");
@@ -93,7 +106,7 @@ public class WageCalculator {
         return !scanner.nextLine().equalsIgnoreCase("No");
     }
 
-    // Calculation Method
+    // ---------- CALCULATION METHODS ----------
 
     static double calculateGrossPay(double hours, double rate) {
         return hours * rate;
@@ -110,7 +123,7 @@ public class WageCalculator {
         return 0;
     }
 
-    // Output Method
+    // ---------- OUTPUT METHODS ----------
 
     static void printEmployeeSummaries(
             ArrayList<String> ids,
@@ -129,6 +142,51 @@ public class WageCalculator {
             System.out.println("Bonus: €" + bonuses.get(i));
             System.out.println("Net Pay: €" + netPays.get(i));
             System.out.println("--------------------------");
+        }
+    }
+
+    static void writeEmployeeSummariesToFile(
+            String fileName,
+            ArrayList<String> ids,
+            ArrayList<String> names,
+            ArrayList<Double> grossPays,
+            ArrayList<Double> taxes,
+            ArrayList<Double> bonuses,
+            ArrayList<Double> netPays
+    ) {
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+
+            writer.write("Payroll Report");
+            writer.newLine();
+            writer.write("================");
+            writer.newLine();
+            writer.newLine();
+
+            for (int i = 0; i < ids.size(); i++) {
+                writer.write("---- Employee Summary ----");
+                writer.newLine();
+                writer.write("ID: " + ids.get(i));
+                writer.newLine();
+                writer.write("Name: " + names.get(i));
+                writer.newLine();
+                writer.write("Gross Pay: €" + grossPays.get(i));
+                writer.newLine();
+                writer.write("Tax Paid: €" + taxes.get(i));
+                writer.newLine();
+                writer.write("Bonus: €" + bonuses.get(i));
+                writer.newLine();
+                writer.write("Net Pay: €" + netPays.get(i));
+                writer.newLine();
+                writer.write("--------------------------");
+                writer.newLine();
+                writer.newLine();
+            }
+
+            System.out.println("Payroll successfully written to " + fileName);
+
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
         }
     }
 }
